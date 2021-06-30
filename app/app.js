@@ -9,6 +9,7 @@ Description : <>
 
 'use strict';
 
+const cookieName = 'STUDENT=';
 const appWidth = 242;
 const pictureWidth = 230;
 const pictureHeight = 312;
@@ -28,6 +29,24 @@ const webcam = new Webcam(webcamElement, 'user', canvasElement, snapSoundElement
 
 $('#webcamSwitch').bootstrapToggle('off');
 $('input[name="gender"]').change();
+
+function isAuthenticated() {
+    let cookie = document.cookie.split(';');
+    let isAuthenticated = false;
+
+    for (var i = 0; i < cookie.length; i++) {
+        var c = cookie[i];
+
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+
+        if (c.indexOf(cookieName) == 0)
+            isAuthenticated = (c.substring(name.length, c.length).length > 0 ? true : false);
+    }
+
+    return isAuthenticated;
+}
 
 function displayError(err) {
     if (err !== undefined && err.length > 0)
@@ -49,9 +68,10 @@ function setCameraPositionLeft() {
     if (cameraWidth >= pictureWidth)
         webcamElement.style.left = ('-' + cameraLeft + 'px');
     else {
-        cameraStopped();
+        $('#cameraOff')[0].click();
+
         displayError('');
-        $('#errorMsg .msg3').removeClass('d-none');
+        $('#errorMsg .msg4').removeClass('d-none');
     }
 }
 
@@ -154,16 +174,23 @@ $('#webcamSwitch').change(function () {
     var switchStatus = $(this).prop('checked')
     
     if (switchStatus) {
-        webcam.start()
-            .then((result) => {
-                setTimeout(function () {
-                    cameraStarted();
-                }, 500);
-            })
-            .catch((err) => {
-                displayError('');
-                $('#errorMsg .msg1').removeClass('d-none');
-        });
+        if (isAuthenticated()) {
+            webcam.start()
+                .then((result) => {
+                    setTimeout(function () {
+                        cameraStarted();
+                    }, 500);
+                })
+                .catch((err) => {
+                    displayError('');
+                    $('#errorMsg .msg2').removeClass('d-none');
+            });
+        }
+        else {
+            displayError('');
+            $('#cameraOff, #cameraControls').addClass("d-none");
+            $('#errorMsg .msg1').removeClass('d-none');
+        }
     }
     else {
         cameraStopped();
@@ -173,38 +200,48 @@ $('#webcamSwitch').change(function () {
 
  
 $('#takePhoto').click(function () {
-    beforeTakePhoto();
+    if (isAuthenticated()) {
+        beforeTakePhoto();
+        
+        let picture = webcam.snap();
     
-    let picture = webcam.snap();
-   
-    let canvas = document.getElementById('canvas');
-    canvas.width = $('.canvas').width();
-    canvas.height = $('.canvas').height();
+        let canvas = document.getElementById('canvas');
+        canvas.width = $('.canvas').width();
+        canvas.height = $('.canvas').height();
 
-    let context = canvas.getContext('2d');
+        let context = canvas.getContext('2d');
+            
+        let imgLayer1 = new Image;
+        imgLayer1.src = picture;
+        imgLayer1.onload = function () {
+            context.drawImage(imgLayer1, getCameraPositionLeft(), 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+            
+            let canvasResult = document.getElementById('canvasResult');
+            canvasResult.width = $('.canvas').width();
+            canvasResult.height = $('.canvas').height();
+            
+            let contextResult = canvasResult.getContext('2d');
         
-    let imgLayer1 = new Image;
-    imgLayer1.src = picture;
-    imgLayer1.onload = function () {
-        context.drawImage(imgLayer1, getCameraPositionLeft(), 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
-        
-        let canvasResult = document.getElementById('canvasResult');
-        canvasResult.width = $('.canvas').width();
-        canvasResult.height = $('.canvas').height();
-        
-        let contextResult = canvasResult.getContext('2d');
-    
-        let imgLayer2 = new Image;
-        imgLayer2.src = getUniform($('input[name="gender"]:checked').val());
-        imgLayer2.onload = function () {
-            contextResult.drawImage(canvas, 0, 0, canvasResult.width, canvasResult.height);
-            contextResult.drawImage(imgLayer2, 0, 0);
-        
-            document.querySelector('#savePhoto').href = canvasResult.toDataURL('image/png');;
+            let imgLayer2 = new Image;
+            imgLayer2.src = getUniform($('input[name="gender"]:checked').val());
+            imgLayer2.onload = function () {
+                contextResult.drawImage(canvas, 0, 0, canvasResult.width, canvasResult.height);
+                contextResult.drawImage(imgLayer2, 0, 0);
+            
+                document.querySelector('#savePhoto').href = canvasResult.toDataURL('image/png');;
 
-            afterTakePhoto();
-        };
+                afterTakePhoto();
+            };
+        }
     }
+    else {
+        $('#cameraOff')[0].click();
+
+        displayError('');
+        $('#cameraOff, #cameraControls').addClass("d-none");
+        $('#errorMsg .msg1').removeClass('d-none');
+    }
+    
 });
 
 $('#cameraOff').click(function () {
@@ -212,19 +249,45 @@ $('#cameraOff').click(function () {
 });
 
 $('#downloadPhoto').click(function () {
-    $('#savePhoto')[0].click();
+    if (isAuthenticated())
+        $('#savePhoto')[0].click();
+    else {
+        cameraStopped();
+
+        displayError('');
+        $('#cameraOff, #cameraControls').addClass("d-none");
+        $('#errorMsg .msg1').removeClass('d-none');    
+    }
 });
 
 $('#cameraFlip').click(function() {
-    webcam.flip();
-    webcam.start();
+    if (isAuthenticated()) {
+        webcam.flip();
+        webcam.start();
+    }
+    else {
+        $('#cameraOff')[0].click();
+
+        displayError('');
+        $('#cameraOff, #cameraControls').addClass("d-none");
+        $('#errorMsg .msg1').removeClass('d-none');    
+    }
 });
 
 $('#resumeCamera').click(function () {
-    webcam.stream()
-        .then((facingMode) =>{
-            $('#selectGender .btn').removeClass('disabled');
-            $('#selectGender input[name="gender"]').prop('disabled', false);
-            removeCapture();
-        });
+    if (isAuthenticated()) {
+        webcam.stream()
+            .then((facingMode) =>{
+                $('#selectGender .btn').removeClass('disabled');
+                $('#selectGender input[name="gender"]').prop('disabled', false);
+                removeCapture();
+            });
+    }
+    else {
+        cameraStopped();
+
+        displayError('');
+        $('#cameraOff, #cameraControls').addClass("d-none");
+        $('#errorMsg .msg1').removeClass('d-none');    
+    }
 });

@@ -28,14 +28,17 @@
             <canvas class="canvas d-none" id="canvasResult"></canvas>
             <div class="d-none" id="errorMsg">
                 <div class="msg1 d-none">
-                    Fail to start camera, please allow permision to access camera.
+                    <h4>Please sign in student portal.</h4>
                 </div>
                 <div class="msg2 d-none">
-                    <h3>You are using a browser that is not supported.</h3>
+                    Fail to start camera, please allow permision to access camera.
+                </div>
+                <div class="msg3 d-none">
+                    <h4>You are using a browser that is not supported.</h4>
                     <div class="dropdown-divider"></div>
                     This web app works on the latest versions of <strong>Google Chrome</strong>, <strong>Mozilla Firefox</strong>, <strong>Apple Safari</strong>, or <strong>Microsoft Edge</strong>.
                 </div>
-                <div class="msg3 d-none">
+                <div class="msg4 d-none">
                     Fail to start camera, the width of the camera is less than the width of the photo.
                 </div>
             </div>
@@ -81,28 +84,54 @@
 <script src="app/app.js"></script>
 <script type="text/javascript">
     window.addEventListener('DOMContentLoaded', function() {
-        var userAgent = navigator.userAgent;
-        var platform = navigator.platform;
-        var isOpera = (!!window.opera || userAgent.indexOf('OPR/') >= 0);
-        var isEdge = (userAgent.indexOf('Edge') > -1);
-        var isChrome = (!!window.chrome && !isOpera && !isEdge);
-        var isIE = (typeof document !== 'undefined' && !!document.documentMode && !isEdge);
-        var isFirefox = (typeof window.InstallTrigger !== 'undefined');
-        var isSafari = (/^((?!chrome|android).)*safari/i.test(userAgent));
-        var isWindow = (platform.indexOf('Win') > -1)
-        
-        if ((!isIE && !isSafari) || (isSafari && !isWindow)) {
-            $('#webcamSwitch').bootstrapToggle('off');
-            $('input[name="gender"]').change();
+        var cookieName = "STUDENT=";
+        var cookie = document.cookie.split(';');
+        var isAuthenticated = false;
+        var isBrowserSupport = true;
 
-            window.addEventListener('resize', setCameraPositionLeft);
+        for (var i = 0; i < cookie.length; i++) {
+            var c = cookie[i];
+
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+
+            if (c.indexOf(cookieName) == 0)
+                isAuthenticated = (c.substring(name.length, c.length).length > 0 ? true : false);
         }
-        else {
+
+        if (isAuthenticated) {
+            var userAgent = navigator.userAgent;
+            var platform = navigator.platform;
+            var isOpera = (!!window.opera || userAgent.indexOf('OPR/') >= 0);
+            var isEdge = (userAgent.indexOf('Edge') > -1);
+            var isChrome = (!!window.chrome && !isOpera && !isEdge);
+            var isIE = (typeof document !== 'undefined' && !!document.documentMode && !isEdge);
+            var isFirefox = (typeof window.InstallTrigger !== 'undefined');
+            var isSafari = (/^((?!chrome|android).)*safari/i.test(userAgent));
+            var isWindow = (platform.indexOf('Win') > -1)
+        
+            if ((!isIE && !isSafari) || (isSafari && !isWindow)) {
+                $('#webcamSwitch').bootstrapToggle('off');
+                $('input[name="gender"]').change();
+
+                window.addEventListener('resize', setCameraPositionLeft);
+            }
+            else
+                isBrowserSupport = false;
+        }
+
+        if (!isAuthenticated || !isBrowserSupport) {
             $('#webcamApp').css('width', '100%');
             $('#selectGender').addClass('d-none');
             $('#cameraContainer').addClass('d-none');
-            $('#errorMsg .msg2').removeClass('d-none');
             $('#errorMsg').removeClass('d-none');
+
+            if (!isAuthenticated)
+                $('#errorMsg .msg1').removeClass('d-none');
+
+            if (!isBrowserSupport)
+                $('#errorMsg .msg3').removeClass('d-none');
         }
     }, false);
 </script>
