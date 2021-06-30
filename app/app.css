@@ -1,0 +1,240 @@
+/*
+=============================================
+Author      : <ยุทธภูมิ ตวันนา>
+Create date : <๐๕/๐๖/๒๕๖๔>
+Modify date : <๓๐/๐๖/๒๕๖๔>
+Description : <>
+=============================================
+*/
+
+body {
+    font-family: "Roboto", sans-serif !important;
+    background-color: #273A89 !important;
+    margin: 0;
+    padding: 20px;
+    -ms-overflow-style: scrollbar;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    cursor: default;
+}
+
+.btn:focus,
+.btn.focus,
+.btn-dark:not(:disabled):not(.disabled):active:focus,
+.btn-dark:not(:disabled):not(.disabled).active:focus {
+    box-shadow: none;
+}
+
+.btn.disabled {
+    pointer-events: none;
+}
+
+#webcamApp {
+    width: 242px;
+    min-width: 242px;
+    margin: 0 auto;
+}
+
+header {
+    background-image: url(../images/logo.png);
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: auto;
+    width: inherit;
+    height: 124px;
+    margin: 0 auto;
+}
+
+main {
+    width: inherit;
+    padding-top: 10px;
+}
+
+#errorMsg {
+    font-size: 20px;
+    padding-top: 10px;
+    color: #FFFFFF;
+    text-align: center;
+}
+
+#errorMsg .dropdown-divider {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    border-top-color: transparent;
+}
+
+#selectGender {
+    display: block;
+    text-align: center;
+}
+
+#selectGender .btn {
+    width: 45px;
+    height: 45px;
+    border: 0;
+    border-radius: 50%;
+    font-size: 1.7rem;
+    padding: 0;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+#selectGender .btn.disabled {
+    cursor: default;
+}
+
+#selectGender .btn i {
+    vertical-align: middle;
+}
+
+#selectGender .btn.active {
+    background-color: #28A745;
+}
+
+#selectGender label[for="genderFemaleMuslim"] i {
+    display: block;
+    width: 28px;
+    height: 28px;
+    background-repeat: no-repeat;
+    background-image: url(../images/female-muslim.png);
+    background-size: cover;
+    position: relative;
+    top: 9px;
+    margin: 0 auto;
+}
+
+#cameraContainer {
+    background-color: transparent;/*4598FF*/
+    width: inherit;
+    height: 324px;
+    overflow: hidden;
+    border: 6px solid #CCCCCC;
+    border-radius: 1rem;
+    margin-top: 10px;
+}
+
+.webcamControl {
+    position: relative;
+    background-color: transparent;
+    font-size: 1rem;
+    width: 100%;
+    z-index: 9999;
+    top: 45%;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.formSwitch {
+    display: inline-block;
+}
+
+.formSwitch .toggle.btn {
+    border-radius: 25rem;
+    display: inline-block;
+    min-width: 10rem;
+}
+
+.formSwitch .toggle .toggle-handle {
+    border-radius: 0;
+}
+
+.webcamContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+}
+
+#webcam {
+    display: block;
+    position: absolute;
+    width: auto;
+    pointer-events: none;
+}
+
+#canvasTemp,
+#canvas {
+    background-color: transparent;
+    position: absolute;
+    width: auto;
+    height: 100%;
+    z-index: 9998;
+    top: 0;
+    left: 0;
+}
+
+.canvas {
+    width: 230px;
+    height: 312px;
+}
+
+.flash { 
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: inherit;
+    height: inherit;
+    background-color:#FFFFFF;
+    z-index: 999999;
+}  
+
+.studentUniform {
+    position: relative;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    background-size: auto;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+}
+
+.cameraControls {
+    width: 100%;
+    background: transparent;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.cameraControls .btn:disabled {
+    opacity: 0.3;
+}
+
+#cameraControls .btn {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    background-color: #000000;
+    border: 0;
+    margin-right: 17px;
+}
+
+#cameraControls i {
+    font-size: 40px;
+    color: #FFFFFF;
+}
+
+#cameraOff,
+#cameraFlip,
+#resumeCamera {
+    width: 60px !important;
+    height: 60px !important;
+}
+
+#cameraOff i,
+#resumeCamera i {
+    font-size: 1.5rem;
+    vertical-align: middle;
+}
+
+#cameraFlip i {
+    display: block;
+    width: 40px;
+    height: 40px;
+    background-repeat: no-repeat;
+    background-image: url(../images/camera-flip.png);
+    background-size: cover;
+    position: relative;
+    left: -1px;
+    margin: 0 auto;
+}

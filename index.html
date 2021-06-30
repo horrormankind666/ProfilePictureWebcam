@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Profile Picture Webcam</title>
+    <link href="mu-favicon.png" rel="shortcut icon" type="image/x-icon">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css"rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+    <link href="app/app.css" rel="stylesheet">    
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+    <script src="js/webcam.js"></script>
+    <script src="js/male-student-uniform.js"></script>
+    <script src="js/female-student-uniform.js"></script>
+    <script src="js/female-muslim-student-uniform.js"></script>
+</head>
+<body>
+    <div id="webcamApp">
+        <header></header>
+        <main>
+            <canvas class="canvas d-none" id="canvasResult"></canvas>
+            <div class="d-none" id="errorMsg">
+                <div class="msg1 d-none">
+                    Fail to start camera, please allow permision to access camera.
+                </div>
+                <div class="msg2 d-none">
+                    <h3>You are using a browser that is not supported.</h3>
+                    <div class="dropdown-divider"></div>
+                    This web app works on the latest versions of <strong>Google Chrome</strong>, <strong>Mozilla Firefox</strong>, <strong>Apple Safari</strong>, or <strong>Microsoft Edge</strong>.
+                </div>
+                <div class="msg3 d-none">
+                    Fail to start camera, the width of the camera is less than the width of the photo.
+                </div>
+            </div>
+            <div class="btn-group btn-group-toggle" id="selectGender" data-toggle="buttons">
+                <label class="btn btn-secondary active" for="genderMale">
+                    <input type="radio" class="gender" name="gender" id="genderMale" value="male" autocomplete="off" checked>
+                    <i class="fas fa-male"></i>
+                </label>
+                <label class="btn btn-secondary" for="genderFemale">
+                    <input type="radio" class="gender" name="gender" id="genderFemale" value="female" autocomplete="off">
+                    <i class="fas fa-female"></i>
+                </label>
+                <label class="btn btn-secondary" for="genderFemaleMuslim">
+                    <input type="radio" class="gender" name="gender" id="genderFemaleMuslim"  value="female-muslim" autocomplete="off">
+                    <i></i>
+                </label>
+            </div>
+            <div class="cameraContainer" id="cameraContainer">
+                <div class="webcamControl" id="webcamControl">
+                    <label class="formSwitch mb-0">
+                        <input type="checkbox" id="webcamSwitch" data-toggle="toggle" data-on="Camera On" data-onstyle="success" data-off="Camera Off" data-offstyle="danger">
+                    </label>
+                </div>
+                <div class="webcamContainer d-none" id="webcamContainer">
+                    <video id="webcam" autoplay playsinline width="416" height="312"></video>
+                    <div class="studentUniform"></div>
+                    <canvas class="canvas d-none" id="canvas"></canvas>
+                    <div class="flash"></div>
+                    <audio id="snapSound" src="audio/snap.wav" preload="auto"></audio>
+                </div>
+            </div>
+            <div class="cameraControls d-none" id="cameraControls">
+                <button type="button" class="btn" id="cameraOff" title="Camera Off"><i class="fas fa-power-off"></i></button>
+                <button type="button" class="btn" id="takePhoto" title="Take Photo"><i class="fas fa-camera"></i></button>
+                <button type="button" class="btn mr-0" id="cameraFlip" title="Camera Flip"><i></i></button>
+                <button type="button" class="btn" id="downloadPhoto" title="Download Photo"><i class="fas fa-download"></i></button>
+                <a href="#" class="d-none" id="savePhoto" download="selfie.png" target="_blank" title="Save Photo"></a>
+                <button type="button" class="btn mr-0" id="resumeCamera" title="Resume Camera"><i class="fas fa-redo"></i></button>
+            </div>
+        </main>
+    </div>
+</body>
+<script src="app/app.js"></script>
+<script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', function() {
+        var userAgent = navigator.userAgent;
+        var platform = navigator.platform;
+        var isOpera = (!!window.opera || userAgent.indexOf('OPR/') >= 0);
+        var isEdge = (userAgent.indexOf('Edge') > -1);
+        var isChrome = (!!window.chrome && !isOpera && !isEdge);
+        var isIE = (typeof document !== 'undefined' && !!document.documentMode && !isEdge);
+        var isFirefox = (typeof window.InstallTrigger !== 'undefined');
+        var isSafari = (/^((?!chrome|android).)*safari/i.test(userAgent));
+        var isWindow = (platform.indexOf('Win') > -1)
+        
+        if ((!isIE && !isSafari) || (isSafari && !isWindow)) {
+            $('#webcamSwitch').bootstrapToggle('off');
+            $('input[name="gender"]').change();
+
+            window.addEventListener('resize', setCameraPositionLeft);
+        }
+        else {
+            $('#webcamApp').css('width', '100%');
+            $('#selectGender').addClass('d-none');
+            $('#cameraContainer').addClass('d-none');
+            $('#errorMsg .msg2').removeClass('d-none');
+            $('#errorMsg').removeClass('d-none');
+        }
+    }, false);
+</script>
