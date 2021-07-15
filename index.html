@@ -45,15 +45,15 @@
             <div class="btn-group btn-group-toggle" id="selectGender" data-toggle="buttons">
                 <label class="btn btn-secondary active" for="genderMale">
                     <input type="radio" class="gender" name="gender" id="genderMale" value="male" autocomplete="off" checked>
-                    <i class="fas fa-male"></i>
+                    <i class="fas fa-male" aria-hidden="true"></i>
                 </label>
                 <label class="btn btn-secondary" for="genderFemale">
                     <input type="radio" class="gender" name="gender" id="genderFemale" value="female" autocomplete="off">
-                    <i class="fas fa-female"></i>
+                    <i class="fas fa-female" aria-hidden="true"></i>
                 </label>
                 <label class="btn btn-secondary" for="genderFemaleMuslim">
                     <input type="radio" class="gender" name="gender" id="genderFemaleMuslim"  value="female-muslim" autocomplete="off">
-                    <i></i>
+                    <i aria-hidden="true"></i>
                 </label>
             </div>
             <div class="cameraContainer" id="cameraContainer">
@@ -71,12 +71,12 @@
                 </div>
             </div>
             <div class="cameraControls d-none" id="cameraControls">
-                <button type="button" class="btn" id="cameraOff" title="Camera Off"><i class="fas fa-power-off"></i></button>
-                <button type="button" class="btn" id="takePhoto" title="Take Photo"><i class="fas fa-camera"></i></button>
-                <button type="button" class="btn mr-0" id="cameraFlip" title="Camera Flip"><i></i></button>
-                <button type="button" class="btn" id="downloadPhoto" title="Download Photo"><i class="fas fa-download"></i></button>
+                <button type="button" class="btn" id="cameraOff" title="Camera Off"><i class="fas fa-power-off" aria-hidden="true"></i></button>
+                <button type="button" class="btn" id="takePhoto" title="Take Photo"><i class="fas fa-camera" aria-hidden="true"></i></button>
+                <button type="button" class="btn mr-0" id="cameraFlip" title="Camera Flip"><i aria-hidden="true"></i></button>
+                <button type="button" class="btn" id="downloadPhoto" title="Download Photo"><i class="fas fa-download" aria-hidden="true"></i></button>
                 <a href="#" class="d-none" id="savePhoto" download="selfie.png" target="_blank" title="Save Photo"></a>
-                <button type="button" class="btn mr-0" id="resumeCamera" title="Resume Camera"><i class="fas fa-redo"></i></button>
+                <button type="button" class="btn mr-0" id="resumeCamera" title="Resume Camera"><i class="fas fa-redo" aria-hidden="true"></i></button>
             </div>
         </main>
     </div>
@@ -84,7 +84,7 @@
 <script src="app/app.js"></script>
 <script type="text/javascript">
     window.addEventListener('DOMContentLoaded', function() {
-        var cookieName = "STUDENT=";
+        var cookieName = 'STUDENT=';
         var cookie = document.cookie.split(';');
         var isAuthenticated = false;
         var isBrowserSupport = true;
@@ -112,10 +112,14 @@
             var isWindow = (platform.indexOf('Win') > -1)
         
             if ((!isIE && !isSafari) || (isSafari && !isWindow)) {
-                $('#webcamSwitch').bootstrapToggle('off');
-                $('input[name="gender"]').change();
+                setEventLog('hello world', function (result) {
+                    if (result.SaveError === '0') {
+                        $('#webcamSwitch').bootstrapToggle('off');
+                        $('input[name="gender"]').change();
 
-                window.addEventListener('resize', setCameraPositionLeft);
+                        window.addEventListener('resize', setCameraPositionLeft);
+                    }
+                });
             }
             else
                 isBrowserSupport = false;

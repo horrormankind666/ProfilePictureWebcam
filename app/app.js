@@ -30,11 +30,31 @@ const webcam = new Webcam(webcamElement, 'user', canvasElement, snapSoundElement
 $('#webcamSwitch').bootstrapToggle('off');
 $('input[name="gender"]').change();
 
+function setEventLog(remark, callback) {
+    $.ajax({
+        async: true,
+        type: 'POST',
+        url: 'https://smartedu.mahidol.ac.th/eProfile/Content/Handler/UploadDocument/UDSHandler.ashx',
+        data: {
+            signinyn: 'Y',
+            action: 'save',
+            page: 'ProfilePictureWebcamMain',
+            remark: remark
+        },
+        dataType: 'json',
+        charset: 'utf-8',
+        success: function (result) {
+            return callback(result);
+        }
+    });
+}
+
 function isAuthenticated() {
     let cookie = document.cookie.split(';');
     let isAuthenticated = false;
+    let i;
 
-    for (var i = 0; i < cookie.length; i++) {
+    for (i = 0; i < cookie.length; i++) {
         var c = cookie[i];
 
         while (c.charAt(0) == ' ') {
@@ -228,7 +248,7 @@ $('#takePhoto').click(function () {
                 contextResult.drawImage(canvas, 0, 0, canvasResult.width, canvasResult.height);
                 contextResult.drawImage(imgLayer2, 0, 0);
             
-                document.querySelector('#savePhoto').href = canvasResult.toDataURL('image/png');;
+                document.querySelector('#savePhoto').href = canvasResult.toDataURL('image/png');
 
                 afterTakePhoto();
             };
@@ -249,14 +269,17 @@ $('#cameraOff').click(function () {
 });
 
 $('#downloadPhoto').click(function () {
-    if (isAuthenticated())
-        $('#savePhoto')[0].click();
+    if (isAuthenticated()) {
+        setEventLog('download photo', function () { 
+            $('#savePhoto')[0].click();
+        });
+    }
     else {
         cameraStopped();
 
         displayError('');
         $('#cameraOff, #cameraControls').addClass("d-none");
-        $('#errorMsg .msg1').removeClass('d-none');    
+        $('#errorMsg .msg1').removeClass('d-none');
     }
 });
 
